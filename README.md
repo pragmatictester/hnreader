@@ -64,7 +64,8 @@ http://hn.algolia.com/api/v1/search?hitsPerPage=10&tags=(story,poll)&numericFilt
 ### Top 30 Stories over the last 30 days
 
 ```
-http://hn.algolia.com/api/v1/search?hitsPerPage=30&tags=(story,poll)&numericFilters=created_at_i >= // (NOW-30 days)
+http://hn.algolia.com/api/v1/search?hitsPerPage=30&tags=(story,poll)
+&numericFilters=created_at_i >= // (NOW-30 days)
 ```
 
 
