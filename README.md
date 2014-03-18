@@ -1,10 +1,8 @@
 # Hacker News Reader
---------------
 
 [Hacker News Reader](https://github.com/pragmatictester/hnreader) is a [Mozilla Firefox browser add-on](https://addons.mozilla.org/en-US/firefox/addon/hacker-news-reader/). It has a radically new interface that combines visual density with a clean design. The interface is completely powered by the [Algolia HN Search API](https://hn.algolia.io/api).
 
 ## Features
---------------
 
 * After installing the add-on, customize your browser's navigation bar by dragging the add-on's icon on to it.
 * Click on the icon in your browser's navigation bar to get the latest top stories.
@@ -24,7 +22,6 @@
 
 
 ## Algolia HN Search API Calls
---------------
 
 ### Top Stories for the past 24 hours
 
@@ -126,14 +123,12 @@ http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=(story,poll),aut
 http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=comment,author_ // + username
 ```
 
-Credits
---------
+# Credits
     
 * [Algolia HN Search API](https://hn.algolia.io/api). Several other [cool apps](https://hn.algolia.io/cool_apps) are built on top of this API. 
 * [Dortmund Icon Set](http://pc.de/icons/#Dortmund) used under [CC-BY-3.0 license](https://creativecommons.org/licenses/by/3.0/).
 
 
-License
---------
+# License
 
 Code released under [Mozilla Public License, version 2.0](http://www.mozilla.org/MPL/2.0/).    
