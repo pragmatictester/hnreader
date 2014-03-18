@@ -25,8 +25,9 @@
 
 ### Top Stories for the past 24 hours
 
-```javascript
-http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=1000&tags=(story,poll)&numericFilters=points>=5,created_at_i >= // (NOW-24 hrs)
+```
+http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=1000&tags=(story,poll)
+&numericFilters=points>=5,created_at_i >= // (NOW-24 hrs)
 ```
 
 Each story in the API response is assigned a Hotness Rank and then sorted by hotness to get an approximation of the listing on the [Hacker News home page](https://news.ycombinator.com/).
@@ -38,7 +39,7 @@ hotness = Math.round( (num_points) * ((num_comments + 1)/5) / Math.pow(((recency
 
 ### Comments for each story
 
-```javascript
+```
 http://hn.algolia.com/api/v1/items/ // + storyId
 ```
 
@@ -53,7 +54,7 @@ http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=(story,poll)
 ### Top Stories over the last 7 days
 The top 10 stories (by points) for each day are requested by calling this API in a loop, decrementing the days past each time. 
 
-```javascript
+```
 http://hn.algolia.com/api/v1/search?hitsPerPage=10&tags=(story,poll)&numericFilters
 =created_at_i > // (NOW-7 days)
 ,created_at_i < // (NOW-6 days)
@@ -62,7 +63,7 @@ http://hn.algolia.com/api/v1/search?hitsPerPage=10&tags=(story,poll)&numericFilt
 
 ### Top 30 Stories over the last 30 days
 
-```javascript
+```
 http://hn.algolia.com/api/v1/search?hitsPerPage=30&tags=(story,poll)&numericFilters=created_at_i >= // (NOW-30 days)
 ```
 
@@ -96,7 +97,7 @@ http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=poll
 
 Each individual poll can be accessed by calling this API, which contains poll options and votes in the JSON response object:
 
-```javascript
+```
 http://hn.algolia.com/api/v1/items/ // + storyId
 ```
 
@@ -112,14 +113,14 @@ http://hn.algolia.com/api/v1/users/ // + username
 
 ### User's past story submissions
 
-```javascript
+```
 http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=(story,poll),author_ // + username
 ```
 
 
 ### User's past comments
 
-```javascript
+```
 http://hn.algolia.com/api/v1/search_by_date?hitsPerPage=30&tags=comment,author_ // + username
 ```
 
