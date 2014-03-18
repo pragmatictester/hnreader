@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Hacker News Reader</title>
+		<meta charset="utf-8">
+		<link rel='stylesheet' href='chrome://hnreader/skin/hnreader.css' type='text/css'>
+		<link rel="icon" type="image/png" href="chrome://hnreader/skin/hnreader16.png" />
+		<script type='text/javascript'>
+			function doHNAction(action) {
+				var element = document.getElementById('hnreader-header');
+				var evt = document.createEvent("Events");
+				evt.initEvent(action, true, false);
+				element.dispatchEvent(evt);
+				return false;
+			}
+		</script>
+	</head>
+	<body>
+		<header id="hnreader-header">
+			<nav>
+				<p>
+				<a href="https://news.ycombinator.com/"><span class="yc">Y</span></a> 
+				<a href="#topStories" onclick="return doHNAction('onTopStoriesClick')">top</a> |  
+				<a href="#newest" onclick="return doHNAction('onNewestStoriesClick')">newest</a> |  
+				<a href="#show-hn" onclick="return doHNAction('onShowHnClick')">show HN</a> | 
+				<a href="#ask-hn" onclick="return doHNAction('onAskHnClick')">ask HN</a> | 
+				<a href="#polls" onclick="return doHNAction('onPollsClick')">polls</a> | 
+				<a href="#whoishiring" onclick="return doHNAction('onWhoIsHiringClick')">who's hiring?</a> | 
+				<a href="#last7Days" onclick="return doHNAction('onLast7DaysClick')">last 7 days</a> | 
+				<a href="#last30Days" onclick="return doHNAction('onLast30DaysClick')">last 30 days</a> | 
+				<a href="https://hn.algolia.io/" target="_blank">search</a> 
+				</p>
+			</nav>
+		</header>
+		<div id="hnreader-content">
+			<div id="hnreader-content-loading">
+			</div>
+		</div>
+		<footer id="hnreader-footer">
+			<p>Powered by <a href="https://hn.algolia.io/api" target="_blank">Algolia HN Search API</a>. 
+			Not affiliated with <a href="http://ycombinator.com/" target="_blank">Y Combinator</a>.</p>
+		</footer>
+	</body>
+</html>

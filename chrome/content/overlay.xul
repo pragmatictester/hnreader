@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://hnreader/skin/hnreader.css" type="text/css"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://hnreader/locale/overlay.dtd">
+<overlay id="hnreader-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://hnreader/content/overlay.js"/>
+	<script type="application/x-javascript" src="chrome://hnreader/content/easytoread.js"/>
+	<script type="application/x-javascript" src="chrome://hnreader/content/comments.js"/>
+	<script type="application/x-javascript" src="chrome://hnreader/content/submitter.js"/>
+	<script type="application/x-javascript" src="chrome://hnreader/content/poll.js"/>
+
+	<!-- define the string bundle for locale-->
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="hnreader-strings" src="chrome://hnreader/locale/overlay.properties"/>
+  </stringbundleset>
+
+	<toolbarpalette id="BrowserToolbarPalette">
+   <toolbarbutton id="hnreader-toolbarbutton"
+      class="toolbarbutton-1 chromeclass-toolbar-additional"
+      tooltiptext="&hnreader-toolbarbutton.label;"
+      label="&hnreader-toolbarbutton.label;"
+      oncommand="hnreader.shortcutEngaged();"
+      image="chrome://hnreader/skin/hnreader16.png"
+      type="menu-button">
+			<menupopup>
+				<menuitem id="hnreader-toolbar-top"
+					label="&hnreader.menu.top.label;"
+					oncommand="hnreader.topStories();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-newest"
+					label="&hnreader.menu.newest.label;"
+					oncommand="hnreader.newestStories();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-showhn"
+					label="&hnreader.menu.showhn.label;"
+					oncommand="hnreader.showHnStories();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-askhn"
+					label="&hnreader.menu.askhn.label;"
+					oncommand="hnreader.askHnStories();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-last30polls"
+					label="&hnreader.menu.last30polls.label;"
+					oncommand="hnreader_poll.last30Polls();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-whoishiring"
+					label="&hnreader.menu.whoishiring.label;"
+					oncommand="hnreader.whoIsHiring();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-last7days"
+					label="&hnreader.menu.last7days.label;"
+					oncommand="hnreader.last7Days();event.stopPropagation();event.preventDefault();"/>
+				<menuseparator/>
+				<menuitem id="hnreader-toolbar-last30days"
+					label="&hnreader.menu.last30days.label;"
+					oncommand="hnreader.last30Days();event.stopPropagation();event.preventDefault();"/>
+			</menupopup>
+		</toolbarbutton>
+	</toolbarpalette>
+</overlay>

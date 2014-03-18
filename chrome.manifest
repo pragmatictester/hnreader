@@ -1,0 +1,11 @@
+content   hnreader  chrome/content/
+
+skin      hnreader  classic/1.0  chrome/skin/
+
+resource  hnreader	chrome/skin/
+
+overlay   chrome://browser/content/browser.xul   chrome://hnreader/content/overlay.xul
+
+style			chrome://browser/content/browser.xul   chrome://hnreader/skin/hnreader.css
+
+locale    hnreader  en-US        chrome/locale/en-US/

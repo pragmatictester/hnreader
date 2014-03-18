@@ -1,0 +1,9 @@
+<!ENTITY  hnreader-toolbarbutton.label "Hacker News Reader">
+<!ENTITY  hnreader.menu.top.label "Top Stories">
+<!ENTITY  hnreader.menu.newest.label "Newest Stories">
+<!ENTITY  hnreader.menu.showhn.label "Show HN">
+<!ENTITY  hnreader.menu.askhn.label "Ask HN">
+<!ENTITY  hnreader.menu.last30polls.label "Polls">
+<!ENTITY  hnreader.menu.whoishiring.label "Who is hiring?">
+<!ENTITY  hnreader.menu.last7days.label "Last 7 Days' Top Stories">
+<!ENTITY  hnreader.menu.last30days.label "Last 30 Days' Top Stories">

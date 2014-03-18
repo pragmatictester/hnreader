@@ -1,0 +1,503 @@
+/*
+ * Hacker News Reader
+ * Website: https://addons.mozilla.org/en-US/firefox/addon/hacker-news-reader/
+ * Source: https://github.com/pragmatictester/hnreader
+ *
+ * Copyright (c) 2014+ pragmatictester
+ * Licensed under the Mozilla Public License, version 1.1
+ */
+@font-face {
+  font-family: "PT Sans";
+  src: url("resource://hnreader/PTSans.ttf");
+}
+@font-face {
+  font-family: "Inconsolata";
+  src: url("resource://hnreader/Inconsolata.otf");
+}
+pre, code, tt, kbd, samp {
+	font-family: 'Inconsolata', monospace;
+  white-space: pre-wrap;
+}
+hr {
+	border: 1px solid #FF6600;
+}
+#hnreader-header,
+#hnreader-footer  {
+	font-family: 'PT Sans', Arial, sans-serif;
+	font-size: 0.95em;
+}
+#hnreader-header p {
+  margin: 8px 0;
+}
+#hnreader-header a ,
+#hnreader-footer a {
+	text-decoration: none;
+	color: #016DB5;
+}
+#hnreader-header > a.submit-yes {
+	background-color: #D0FF9B;
+}
+#hnreader-header a span.yc {
+	background-color: #ff6600;
+	display: inline-block;
+	text-align: center;
+	width: 17px;
+	color: white;
+}
+#hnreader-error {
+  background: url("resource://hnreader/error.png") no-repeat scroll left center #FFF2F2;
+	border: 1px solid #FFD3D3;
+	border-radius: 2px;
+  padding: 0.5em 20px;
+}
+#hnreader-footer > p {
+	text-align: center;
+}
+#hnreader-footer {
+	clear: both;
+	border-top: 1px dotted #F9F9F9;
+}
+#hnreader-content { 
+	border-top: 1px dotted #F9F9F9;
+	color: black;
+	font-family: Georgia, serif;
+}
+#hnreader-content-topStories {
+	margin-right: 0.25em;
+}
+#hnreader-content-topStories  ul.hnreader-content-topStories-items {
+	padding-left: 0;
+	margin-top: 8px;
+}
+#hnreader-content-topStories  ul.hnreader-content-topStories-items li {
+	list-style: none outside none;
+	border-bottom: 1px dotted #F9F9F9;
+}
+#hnreader-content .separator ,
+.hnreader-story-link-domain,
+.hnreader-story-points, 
+.hnreader-story-comments,
+.hnreader-story-time,
+.hnreader-story-submitter {
+	font-family: 'PT Sans', Arial, sans-serif;
+	color: #727272;
+}
+
+.hnreader-story-item 
+{
+	margin: 7px 0;
+}
+#hnreader-viewpane p.hnreader-story-item {
+	background-color: #F7F7F7;
+	margin: 0;
+	padding: 0.5em;
+	display: inline-block;
+	width: 99%;
+}
+#hnreader-viewpane p.hnreader-story-item p.yc-submission-text {
+	font-family: Georgia, serif;
+	color: black;
+	background-color: white;
+	display: block;
+	padding: 0.5em;
+}
+#hnreader-viewpane p.hnreader-story-item[data-position='last'] p.yc-submission-text {
+	display: none;
+}
+.hnreader-story-item a {
+	text-decoration: none;
+}
+.hnreader-story-item a:hover {
+	text-decoration: none;
+}
+.hnreader-story-link {
+	font-family: Georgia, serif;
+	color: black;
+	text-decoration: none;
+}
+.hnreader-story-link-domain {
+	font-size: 0.95em;
+	margin-left: 5px;
+	display: inline-block;
+}
+.hnreader-story-points {
+	background: url('resource://hnreader/points.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+.hnreader-story-submitter {
+	background: url('resource://hnreader/user.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 5px;
+	font-size: 0.95em;
+}
+.hnreader-story-time {
+	background: url('resource://hnreader/time.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+.hnreader-story-comments {
+	background: url('resource://hnreader/comments.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+#hnreader-content-loading {
+	height: 72px;
+	background: url('resource://hnreader/loading.gif') no-repeat center transparent;
+}
+#hnreader-viewpane {
+	width: 49.5%;	
+  float: left;
+  padding: 0;
+	margin: 0;
+	border-left: 1px dotted #F9F9F9;
+	font-family: Georgia, serif;
+}
+#hnreader-viewpane body a {
+	color: #016DB5;
+}
+#hnreader-viewpane h1, #hnreader-viewpane h2 {
+	font-family: Georgia, serif;
+	margin: 0 0 0 0.3em;
+	font-size: 1.4em;
+}
+#hnreader-viewpane h2 {
+	font-size: 1.2em;
+}
+#hnreader-viewpane h1 a , #hnreader-viewpane h2 a {
+	text-decoration: none;
+	color: black;
+}
+#hnreader-viewpane img {
+	max-width: 99%;
+	height: auto;
+	width: auto;
+	float: none;
+	display: block;
+}
+#hnreader-viewpane img.avatar {
+  float: left;
+  max-height: 1em;
+  max-width: 1em;
+	background-color: white;
+  border: 1px solid #F7F7F7;
+	padding: 0 0.1em;
+	margin-right: 0.25em;
+}
+#hnreader-viewpane li img {
+	float: none;
+}
+#hnreader-viewpane li.comment {
+	list-style: disc outside url("chrome://hnreader/skin/comments.png");
+	border-bottom: 1px dotted #F7F7F7;
+}
+#hnreader-viewpane li.pingback {
+  list-style: disc outside url("chrome://hnreader/skin/pingback.png");
+}
+#hnreader-viewpane blockquote {
+	background-color: #F7F7F7;
+	padding: 0.1em 0.75em;
+}
+#hnreader-viewpane #favicon {
+	float: left;
+  margin-right: 0.25em;
+}
+#hnreader-viewpane #favicon > a > img {
+	max-width: 32px;
+}
+#hnreader-viewpane table {
+ display: table;
+ table-layout: fixed;
+ max-width: 100% !important;
+}
+#hnreader-viewpane table img {
+	max-width: inherit;
+}
+#hnreader-viewpane .hnreader-poll {
+	font-family: 'PT Sans', Arial, sans-serif;
+	font-size: 0.95em;
+	background-color: #FFFFFF;
+	color: #000000;
+}
+#hnreader-viewpane .hnreader-poll p.hnreader-poll-total-votes {
+    font-family: 'Inconsolata';
+}
+#hnreader-viewpane .hnreader-poll  ul.hnreader-poll-list {
+	width: 80%;
+}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li{
+	list-style: none outside none;
+}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li p.hnreader-poll-candidate {
+	margin: 0.5em 0 0;
+}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-vote-count {
+	display: inline;
+	position: absolute;
+	margin: 0 0 0 0.25em;
+	font-family: 'Inconsolata', monospace;
+	font-size: 0.9em;	
+}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-horizbar {
+	display: inline-block;
+	height: 1em;
+	border: 1px dotted #F7F7F7;
+	background-color: yellow;
+}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-0 { background-color: #5CCDC9; /*light-blue*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-1 { background-color: #FF9E73; /*rust*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-2 { background-color: #E3FB71; /*chartreuse*/}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-3 { background-color: #B90091; /*pink-dark*/  }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-4 { background-color: #FFF973; /*yellow*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-5 { background-color: #A368D5; /*blue-violet*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-6 { background-color: #d3d1cc; /*grey */  }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-7 { background-color: #5CA82A; /*green*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-8 { background-color: #DF64BD; /*pink-light*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-9 { background-color: #FFEF19; /*yellow-dark*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-10 { background-color: #679FD2; /*blue*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-11 { background-color: #94002D; /*red-magenta*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-12 { background-color: #71DD81; /*green-sage*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-13 { background-color: #FF9F00; /*orange*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-14 { background-color: #A3295C; /*pink-purple*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-15 { background-color: #BF9D30; /*brown-green*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-16 { background-color: #009B95; /*blue-cobalt*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-17 { background-color: #FFD6EC; /*pink-bubblegum*/}
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-18 { background-color: #61D7A4; /*green-sea*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-19 { background-color: #FF8300; /*red-postbox*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-20 { background-color: #AFC4EA; /*blue-greyish*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-21 { background-color: #2DAD03; /*green-dark*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-22 { background-color: #AE2C4C; /*pink-blush*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-23 { background-color: #FF9840; /*orange*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-24 { background-color: #3D4AFF; /*blue-bright*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-25 { background-color: #FFFA40; /*yellow-light*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-26 { background-color: #B564D4; /*purple*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-27 { background-color: #8DE8BA; /*green-aqua*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-28 { background-color: #e09a37; /*yellow-fire*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-29 { background-color: #C64F4F; /*red-brown*/  }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-30 { background-color: #bbbbd9; /*blue-pumice*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-31 { background-color: #FF8D3D; /*orange-dark*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-32 { background-color: #D962C7; /*purple*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-33 { background-color: #D7EDB6; /*green-sage*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-34 { background-color: #f68a5f; /*orange-crusta*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-35 { background-color: #607990; /*grey-slate*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-36 { background-color: #EDE0B6; /*brown-light*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-37 { background-color: #6f4a62; /*violet-cosmic */ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-38 { background-color: #c2b467; /*green-gimblet*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-39 { background-color: #ea6420; /*orange-tahiti*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-40 { background-color: #94969a; /*blue-manatee*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-41 { background-color: #E8F927; /*green-yellow*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-42 { background-color: #FF636D; /*red-berry*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-43 { background-color: #AFC4EE; /*blue-greyish*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-44 { background-color: #2DAD00; /*green-dark*/  }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-45 { background-color: #AE2C44; /*pink-blush*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-46 { background-color: #FF9844; /*orange*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-47 { background-color: #3D4AF0; /*blue-bright*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-48 { background-color: #FFFA44; /*yellow-light*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-49 { background-color: #B564D0; /*purple*/ }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-50 { background-color: #8DE8Bb; /*green-aqua*/ }
+#cnnContainer {
+  text-align: left;
+}
+#hnreader-comments-list {
+  float: left;
+}
+#hnreader-comments-list h1#hnreader-comments-storytitle {
+	font-family: Georgia, serif;
+	margin: 0 0 0 0.3em;
+	font-size: 1.4em;
+}
+ul.hnreader-comment-items {
+	margin-left: 1.5em;
+	padding: 0;
+}
+ul.hnreader-comment-items li {
+	list-style: none;
+	border-bottom: 1px dotted #F9F9F9;
+}
+
+ul.hnreader-comment-items li  ul.hnreader-comment-items li {
+	list-style: url('resource://hnreader/category.png');
+}
+ul.hnreader-comment-items li p.hnreader-comment-item {
+	font-family: Georgia, serif;
+	word-wrap: break-word;
+}
+#hnreader-content .hnreader-comment-expand ,
+#hnreader-content .hnreader-comment-submitter ,
+#hnreader-content .hnreader-comment-time ,
+#hnreader-content .hnreader-comment-link ,
+#hnreader-content .hnreader-comment-replies {
+	color: #727272;
+	font-family: 'PT Sans', Arial, sans-serif;
+	font-size: 0.95em;
+	text-decoration: none;
+}
+#hnreader-content .hnreader-comment-expand {
+	font-family: Georgia, serif;
+}
+#hnreader-content .hnreader-comment-submitter {
+	background: url('resource://hnreader/user.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 5px;
+}
+#hnreader-content .hnreader-comment-time {
+	background: url('resource://hnreader/time.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+#hnreader-content .hnreader-comment-link {
+	background: url('resource://hnreader/link.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+#hnreader-content .hnreader-comment-replies {
+	background: url('resource://hnreader/comments.png') no-repeat left center transparent;
+	padding-left: 18px;
+	margin-left: 0.5em;
+}
+#hnreader-content .hnreader-comment-text  {
+	font-family: Georgia, serif;
+	word-wrap: break-word;
+	color: black;
+	margin-left: 1.5em;
+}
+#hnreader-content .hnreader-comment-text a {
+	color: #016DB5;
+	font-family: 'PT Sans', Arial, sans-serif;
+	font-size: 0.95em;
+}
+#hnreader-tooltip {
+	background-color: #FFFFAA;
+	height: auto;
+	overflow: auto;
+	color: black;
+	font-family: 'PT Sans', Arial, sans-serif;
+	width: 21%;
+	position: absolute;
+	padding: 1em;
+	font-size: 0.8em;
+	cursor: auto;
+}
+#hnreader-tooltip h4 {
+	font-size: 1.3em;
+	margin: 0;
+}
+#hnreader-tooltip p {
+	text-align: left;
+}
+#hnreader-tooltip .popup-close {
+	text-align:right; 
+	cursor: pointer;
+	display: block;
+	width: 100%;
+}
+#hnreader-tooltip .profile-summary {
+	text-align: center;
+}
+#hnreader-tooltip .profile-summary-karma ,
+#hnreader-tooltip .profile-summary-membership ,
+#hnreader-tooltip .profile-summary-comments ,
+#hnreader-tooltip .profile-summary-submissions {
+	padding-left: 18px;
+}
+#hnreader-tooltip .profile-summary-karma {
+	background: url('resource://hnreader/karma.png') no-repeat left center transparent;
+}
+#hnreader-tooltip .profile-summary-membership {
+	background: url('resource://hnreader/time.png') no-repeat left center transparent;
+	margin-left: 0.8em;
+}
+#hnreader-tooltip .profile-summary-comments {
+	background: url('resource://hnreader/comments.png') no-repeat left center transparent;
+	margin-left: 0.8em;
+}
+#hnreader-tooltip .profile-summary-submissions {
+	background: url('resource://hnreader/submissions.png') no-repeat left center transparent;
+	margin-left: 0.8em;
+}
+#hnreader-tooltip p a {
+	text-decoration: underline;
+	color: black;
+}
+#hnreader-tooltip pre, #tooltip code, #tooltip tt, #tooltip kbd, #tooltip samp {
+	font-size: 1.2em;
+}
+
+/* code syntax highlight */
+#hnreader-viewpane pre code[class]:after {
+  content: 'highlight: ' attr(class);
+  display: block; 
+	text-align: right;
+  font-size: smaller;
+  color: black; 
+	background: white;
+  border-top: solid 1px;
+  padding-top: 0.5em;
+}
+#hnreader-viewpane pre code {
+  display: block;
+  color: black;
+  padding: 0.25em;
+}
+#hnreader-viewpane pre code .string,
+#hnreader-viewpane pre code .title, 
+#hnreader-viewpane pre code .parent,
+#hnreader-viewpane pre code .tag .attribute .value,
+#hnreader-viewpane pre code .rules .value,
+#hnreader-viewpane pre code .rules .value .number,
+#hnreader-viewpane pre code .preprocessor,
+#hnreader-viewpane pre code .ruby .symbol,
+#hnreader-viewpane pre code .instancevar,
+#hnreader-viewpane pre code .aggregate,
+#hnreader-viewpane pre code .template_tag,
+#hnreader-viewpane pre code .django .variable,
+#hnreader-viewpane pre code .smalltalk .class,
+#hnreader-viewpane pre code .addition,
+#hnreader-viewpane pre code .flow,
+#hnreader-viewpane pre code .stream,
+#hnreader-viewpane pre code .bash .variable {
+  color: #800;
+}
+#hnreader-viewpane pre code .comment,
+#hnreader-viewpane pre code .annotation,
+#hnreader-viewpane pre code .template_comment,
+#hnreader-viewpane pre code .diff .header,
+#hnreader-viewpane pre code .chunk {
+  color: #888;
+}
+#hnreader-viewpane pre code .number,
+#hnreader-viewpane pre code .regexp,
+#hnreader-viewpane pre code .literal,
+#hnreader-viewpane pre code .smalltalk .symbol,
+#hnreader-viewpane pre code .smalltalk .char,
+#hnreader-viewpane pre code .change {
+  color: #080;
+}
+#hnreader-viewpane pre code .javadoc,
+#hnreader-viewpane pre code .ruby .string,
+#hnreader-viewpane pre code .decorator,
+#hnreader-viewpane pre code .filter .argument,
+#hnreader-viewpane pre code .localvars,
+#hnreader-viewpane pre code .array,
+#hnreader-viewpane pre code .attr_selector,
+#hnreader-viewpane pre code .pi,
+#hnreader-viewpane pre code .doctype,
+#hnreader-viewpane pre code .deletion,
+#hnreader-viewpane pre code .envvar,
+#hnreader-viewpane pre code .shebang {
+  color: #88F;
+}
+#hnreader-viewpane pre code .keyword,
+#hnreader-viewpane pre code .id,
+#hnreader-viewpane pre code .phpdoc,
+#hnreader-viewpane pre code .title,
+#hnreader-viewpane pre code .vbscript .built_in,
+#hnreader-viewpane pre code .rsl .built_in,
+#hnreader-viewpane pre code .cpp .built_in,
+#hnreader-viewpane pre code .aggregate,
+#hnreader-viewpane pre code .smalltalk .class,
+#hnreader-viewpane pre code .winutils,
+#hnreader-viewpane pre code .bash .variable {
+  font-weight: bold;
+}
+
