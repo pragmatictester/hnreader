@@ -20,12 +20,12 @@ var hnreader = {
 	/* define global variables */
   algoliaApiUrl : 'http://hn.algolia.com/api/v1/',
 
-	/* List of pages generated through Algolia HN Search API calls 
+	/* List of pages generated through Algolia HN Search API calls
 		* 'page-id': {
 		*		hnpage: url for the page
 		*		title: title for the page
 		*		handler: function to call to render the page
-		*		algoliaSearchQuery: Algolia HN API parameters for search and filter 
+		*		algoliaSearchQuery: Algolia HN API parameters for search and filter
 		*	}
 	*/
 	"pages": {
@@ -33,31 +33,31 @@ var hnreader = {
 			"hnpage": "chrome://hnreader/content/hackernews.html#topStories",
 			"title": "Top Stories",
 			"handler":	"",
-			"algoliaSearchQuery": "search_by_date?hitsPerPage=1000&tags=(story,poll)&numericFilters=points>=5," // + created_at_i >= (NOW-24 hrs) 
+			"algoliaSearchQuery": "search_by_date?hitsPerPage=1000&tags=(story,poll)&numericFilters=points>=5," // + created_at_i >= (NOW-24 hrs)
 		},
 		"newest": {
 			"hnpage": "chrome://hnreader/content/hackernews.html#newest",
 			"title": "Newest Stories",
 			"handler":	"",
-			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=(story,poll)" 
+			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=(story,poll)"
 		},
 		"showHn": {
 			"hnpage": "chrome://hnreader/content/hackernews.html#show-hn",
 			"title": "Show HN",
 			"handler":	"",
-			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=show_hn" 
+			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=show_hn"
 		},
 		"askHn": {
 			"hnpage": "chrome://hnreader/content/hackernews.html#ask-hn",
 			"title": "Ask HN",
 			"handler":	"",
-			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=ask_hn" 
+			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=ask_hn"
 		},
 		"last30Polls": {
 			"hnpage": "chrome://hnreader/content/hackernews.html#polls",
 			"title": "Polls",
 			"handler":	"",
-			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=poll" 
+			"algoliaSearchQuery": "search_by_date?hitsPerPage=30&tags=poll"
 		},
 		"whoIsHiring": {
 			"hnpage": "chrome://hnreader/content/hackernews.html#whoishiring",
@@ -126,7 +126,7 @@ var hnreader = {
 		hnreader["pages"]["user-submissions"].handler = hnreader_submitter.onSubmitterStoriesClick;
 		hnreader["pages"]["user-comments"].handler = hnreader_submitter.onSubmitterCommentsClick;
 	},
-	
+
 	/**
 	 * Add the toolbar button on the navigation bar if not already there
 	 * Courtesy Mozilla Developer Network and individual contributors
@@ -140,7 +140,7 @@ var hnreader = {
 		currentSet = navBar.currentSet,
 		buttonId = "hnreader-toolbarbutton",
 		toolButton = document.getElementById(buttonId);
-		
+
 		// Append only if the button is not already there.
 		var curSet = currentSet.split(",");
 		if (curSet.indexOf("hnreader-toolbarbutton") == -1) {
@@ -161,7 +161,7 @@ var hnreader = {
 		/* create the HN home page */
 		hnreader.topStories();
 	},
-	
+
 	/**
 	 * Display the top stories on the front page of Hacker News
 	 *
@@ -173,12 +173,12 @@ var hnreader = {
 		var dateFilter = 'created_at_i>='  + timestamp24hr;
 
 		var searchUrl = hnreader.algoliaApiUrl + hnreader["pages"]["topStories"].algoliaSearchQuery + dateFilter;
-		
+
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
+
 		this.request.onload = function (aEvent) {
-			
+
 			let jsObject = JSON.parse(aEvent.target.responseText);
 
 			/* Story Hotness Rank */
@@ -186,19 +186,19 @@ var hnreader = {
 				var num_points = jsObject.hits[i].points;
 				var num_comments = jsObject.hits[i].num_comments;
 				var recency = ((Math.round((new Date()).getTime() / 1000)) - (jsObject.hits[i].created_at_i)) / 3600;
-				jsObject.hits[i].hotness = Math.round( (num_points) * ((num_comments + 1)/5) / Math.pow(((recency + 2)),4) ); 
+				jsObject.hits[i].hotness = Math.round( (num_points) * ((num_comments + 1)/5) / Math.pow(((recency + 2)),4) );
 			}
 
 			//sort the Stories on their Hotness Rank
 			jsObject.hits.sort(function(a,b) { return parseInt(b.hotness) - parseInt(a.hotness) } );
 
-			hnreader.createPage( hnreader["pages"]["topStories"].hnpage, hnreader["pages"]["topStories"].title,  
+			hnreader.createPage( hnreader["pages"]["topStories"].hnpage, hnreader["pages"]["topStories"].title,
 					hnreader["pages"]["topStories"].handler, jsObject, "stories");
-				
+
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
 		this.request.send(null);
 	},
@@ -214,17 +214,16 @@ var hnreader = {
 
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
+
 		this.request.onload = function (aEvent) {
 			let jsObject = JSON.parse(aEvent.target.responseText);
-			//var pageTitle = 'Newest Stories';
-			hnreader.createPage(hnreader["pages"]["newest"].hnpage, hnreader["pages"]["newest"].title, 
+			hnreader.createPage(hnreader["pages"]["newest"].hnpage, hnreader["pages"]["newest"].title,
 					hnreader["pages"]["newest"].handler, jsObject, "stories");
-			
+
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
 		this.request.send(null);
 	},
@@ -240,20 +239,20 @@ var hnreader = {
 
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
+
 		this.request.onload = function (aEvent) {
 			let jsObject = JSON.parse(aEvent.target.responseText);
-			hnreader.createPage(hnreader["pages"]["showHn"].hnpage, hnreader["pages"]["showHn"].title, 
+			hnreader.createPage(hnreader["pages"]["showHn"].hnpage, hnreader["pages"]["showHn"].title,
 					hnreader["pages"]["showHn"].handler, jsObject, "stories");
-			
+
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
 		this.request.send(null);
 	},
-		
+
 	/**
 	 * Display the 30 newest stories tagged 'Ask HN'
 	 *
@@ -265,20 +264,20 @@ var hnreader = {
 
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
+
 		this.request.onload = function (aEvent) {
 			let jsObject = JSON.parse(aEvent.target.responseText);
-			hnreader.createPage(hnreader["pages"]["askHn"].hnpage, hnreader["pages"]["askHn"].title, 
+			hnreader.createPage(hnreader["pages"]["askHn"].hnpage, hnreader["pages"]["askHn"].title,
 					hnreader["pages"]["askHn"].handler, jsObject, "stories");
-			
+
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
 		this.request.send(null);
 	},
-		
+
 	/**
 	 * Display all the stories tagged 'Who is hiring?'
 	 *
@@ -290,18 +289,18 @@ var hnreader = {
 
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
-		this.request.onload = function (aEvent) {			
+
+		this.request.onload = function (aEvent) {
 			let jsObject = JSON.parse(aEvent.target.responseText);
-			
-			hnreader.createPage(hnreader["pages"]["whoIsHiring"].hnpage, hnreader["pages"]["whoIsHiring"].title, 
+
+			hnreader.createPage(hnreader["pages"]["whoIsHiring"].hnpage, hnreader["pages"]["whoIsHiring"].title,
 					hnreader["pages"]["whoIsHiring"].handler, jsObject, "stories");
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
-		this.request.send(null);		
+		this.request.send(null);
 	},
 
 	/**
@@ -317,17 +316,17 @@ var hnreader = {
 
 		this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
+
 		this.request.onload = function (aEvent) {
 			let jsObject = JSON.parse(aEvent.target.responseText);
 
-			hnreader.createPage(hnreader["pages"]["last30Days"].hnpage, hnreader["pages"]["last30Days"].title, 
+			hnreader.createPage(hnreader["pages"]["last30Days"].hnpage, hnreader["pages"]["last30Days"].title,
 					hnreader["pages"]["last30Days"].handler, jsObject, "stories");
-			
+
 		};
-		
+
 		this.request.onError = hnreader.requestErrorHandler;
-		
+
 		this.request.open("GET", searchUrl, true);
 		this.request.send(null);
 	},
@@ -349,15 +348,15 @@ var hnreader = {
 
 		var interimSearchUrl = hnreader.algoliaApiUrl + hnreader["pages"]["last7Days"].algoliaSearchQuery;
 		var searchUrl = interimSearchUrl + dateSearchFilter;
-		
+
 		var requestObject = this;
 		requestObject.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 			.createInstance(Components.interfaces.nsIXMLHttpRequest);
-		
-		requestObject.request.onload = hnreader.onLoadHandlerLast7Days.bind(this); 
+
+		requestObject.request.onload = hnreader.onLoadHandlerLast7Days.bind(this);
 
 		requestObject.request.onError = hnreader.requestErrorHandler;
-		
+
 		requestObject.request.open("GET", searchUrl, true);
 		requestObject.request.send(null);
 	},
@@ -371,13 +370,13 @@ var hnreader = {
 			let jsObject = JSON.parse(aEvent.target.responseText);
 			var hnStoriesDiv;
 			if (hnreader.daysPast == 0) {
-				hnStoriesDiv = hnreader.createPage(hnreader["pages"]["last7Days"].hnpage, hnreader["pages"]["last7Days"].title, 
+				hnStoriesDiv = hnreader.createPage(hnreader["pages"]["last7Days"].hnpage, hnreader["pages"]["last7Days"].title,
 					hnreader["pages"]["last7Days"].handler, jsObject, "stories");
 			}
 			else {
 				hnreader.addToPage(hnreader["pages"]["last7Days"].hnpage, hnreader.daysPast, jsObject);
 			}
-			
+
 			var interimSearchUrl = hnreader.algoliaApiUrl + hnreader["pages"]["last7Days"].algoliaSearchQuery;
 
 			/* Request the top 10 stories, one day at a time */
@@ -386,21 +385,21 @@ var hnreader = {
         var dateSearchFilter = '&numericFilters=created_at_i>'  + ( Math.round((new Date()).getTime() / 1000) - ((hnreader.daysPast+1)*24*60*60) )
 			                + ',' + 'created_at_i<' + ( Math.round((new Date()).getTime() / 1000) - ((hnreader.daysPast)*24*60*60) );
 				var searchUrl = interimSearchUrl + dateSearchFilter;
-
 				this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 					.createInstance(Components.interfaces.nsIXMLHttpRequest);
-				this.request.onload = hnreader.onLoadHandlerLast7Days.bind(this); 
+				this.request.onload = hnreader.onLoadHandlerLast7Days.bind(this);
 				this.request.onError = hnreader.requestErrorHandler;
 				this.request.open('GET', searchUrl, true);
-				this.request.send(null);				
+				this.request.send(null);
+
 			}
 
 		},
-		
+
 	/**
 	 * Create the page requested, opening a new tab if needed
 	 *
-	 * @return hnStoriesDiv: DOM element that is the parent node of all stories displayed 
+	 * @return hnStoriesDiv: DOM element that is the parent node of all stories displayed
 	 **/
 	createPage : function (hnpage, pageTitle, pageRefreshHandler, jsObject, pageType) {
 		/* open the hnpage */
@@ -409,7 +408,7 @@ var hnreader = {
 		var tabFound = tabForUrl.found;
 		//var hnBrowser = gBrowser.getBrowserForTab(gBrowser.addTab(hnpage));
 		var hnStoriesDiv = hnBrowser.contentDocument.getElementById('hnreader-content-topStories');
-		if (hnStoriesDiv) { 
+		if (hnStoriesDiv) {
 			while(hnStoriesDiv.firstChild) {
 				hnStoriesDiv.removeChild(hnStoriesDiv.firstChild);
 			}
@@ -421,54 +420,53 @@ var hnreader = {
 		}
 
 		var onLoadHandler = function () {
-
 			/* create page structure */
 			var hnContentDiv = hnBrowser.contentDocument.getElementById('hnreader-content');
-			
+
 			hnStoriesDiv = hnBrowser.contentDocument.getElementById('hnreader-content-topStories');
 			if (!hnStoriesDiv) {
 				hnStoriesDiv = hnBrowser.contentDocument.createElement('div');
 				hnStoriesDiv.id = 'hnreader-content-topStories';
 			}
 
-			hnBrowser.contentDocument.title = pageTitle + ' | Hacker News Reader'; 
+			hnBrowser.contentDocument.title = pageTitle + ' | Hacker News Reader';
 			/* add new div in hnpage */
 			hnContentDiv.appendChild(hnStoriesDiv);
-			
+
 			var hnStoriesList = hnBrowser.contentDocument.createElement('ul');
-			hnStoriesList.className = 'hnreader-content-topStories-items';			
+			hnStoriesList.className = 'hnreader-content-topStories-items';
 			/* add list to hnStoriesDiv */
 			hnStoriesDiv.appendChild(hnStoriesList);
-			
+
 			switch(pageType) {
 				case "stories":
-					hnreader.parseHnApiResponse(hnStoriesList, jsObject);		
+					hnreader.parseHnApiResponse(hnStoriesList, jsObject);
 					break;
 				case "comments":
-					hnreader_submitter.parseHnApiCommentResponse(hnStoriesList, jsObject);		
+					hnreader_submitter.parseHnApiCommentResponse(hnStoriesList, jsObject);
 					break;
 				default:
 							;
-			}	
+			}
 
 			/* remove waiting animation in hnpage */
 			var hnContentWaitingDiv = hnBrowser.contentDocument.getElementById('hnreader-content-loading');
 			if (hnContentWaitingDiv) {
 				hnContentWaitingDiv.parentElement.removeChild(hnContentWaitingDiv);
-			}				
-	
+			}
+
 			hnBrowser.removeEventListener("load", onLoadHandler, true);
 			hnBrowser.addEventListener("load", pageRefreshHandler, true);
 		};
 		hnBrowser.addEventListener("load", onLoadHandler, true);
 		hnBrowser.removeEventListener("load", pageRefreshHandler, true);
-	
+
 		if (tabFound) {
 			onLoadHandler();
 		}
 
 		return hnStoriesDiv;
-	},		
+	},
 
 	/**
 	 * Add further DOM elements to the page created
@@ -489,30 +487,28 @@ var hnreader = {
 		}
 
 		var hnStoriesList = hnBrowser.contentDocument.getElementById('hnreader-content-day' + daysPast);
-		while(!hnStoriesList) {
-			for(i = 1; i <= 7; i++) {	
-				// add a horizontal rule 
-				var hnHorizontalRule = hnBrowser.contentDocument.createElement('hr');
-				hnStoriesDiv.appendChild(hnHorizontalRule);
-		
-				// add the day count 
-				var hnDayCount = hnBrowser.contentDocument.createElement('p');
-				hnDayCount.className = 'separator';
-				hnDayCount.textContent = i + ' day' + (i > 1 ? 's' : '') + ' ago';
-				hnStoriesDiv.appendChild(hnDayCount);
-		
-				hnStoriesList = hnBrowser.contentDocument.createElement('ul');
-				hnStoriesList.className = 'hnreader-content-topStories-items';			
-				hnStoriesList.id = 'hnreader-content-day' + i;
-				// add list to hnStoriesDiv 
-				hnStoriesDiv.appendChild(hnStoriesList);
-			}
-			hnStoriesList = hnBrowser.contentDocument.getElementById('hnreader-content-day' + daysPast);
-		}
-		
-		hnreader.parseHnApiResponse(hnStoriesList, jsObject);		
 
-	},		
+		if (daysPast > 0) {
+		// add a horizontal rule
+			var hnHorizontalRule = hnBrowser.contentDocument.createElement('hr');
+			hnStoriesDiv.appendChild(hnHorizontalRule);
+
+			// add the day count
+			var hnDayCount = hnBrowser.contentDocument.createElement('p');
+			hnDayCount.className = 'separator';
+			hnDayCount.textContent = daysPast + ' day' + (daysPast > 1 ? 's' : '') + ' ago';
+			hnStoriesDiv.appendChild(hnDayCount);
+		}
+		daysPast++;
+		hnStoriesList = hnBrowser.contentDocument.createElement('ul');
+		hnStoriesList.className = 'hnreader-content-topStories-items';
+		hnStoriesList.id = 'hnreader-content-day' + daysPast;
+		// add list to hnStoriesDiv
+		hnStoriesDiv.appendChild(hnStoriesList);
+
+		hnreader.parseHnApiResponse(hnStoriesList, jsObject);
+
+	},
 
 	/**
 	 * Parse the JSON response of the API and create DOM for the page
@@ -521,14 +517,14 @@ var hnreader = {
 	 **/
 	parseHnApiResponse : function (parentElement, jsObject) {
 		var hnBrowser = gBrowser.contentDocument;
-		
+
 		for (var key in jsObject.hits) {
 			if (jsObject.hits.hasOwnProperty(key)) {
 				var hnListItem = hnBrowser.createElement('li');
 				var hnListItemContent = hnBrowser.createElement('p');
 				hnListItemContent.className = 'hnreader-story-item';
 				var separator = hnBrowser.createTextNode(" ");
-				
+
 				/* Story Title and its link */
 				var hnListItemContentStoryLink = hnBrowser.createElement('a');
 				hnListItemContentStoryLink.className = 'hnreader-story-link';
@@ -537,7 +533,7 @@ var hnreader = {
 				hnListItemContentStoryLink.text = jsObject.hits[key].title;
 				hnListItemContentStoryLink.addEventListener('click', hnreader.onStoryViewClick, false);
 				hnListItemContent.appendChild(hnListItemContentStoryLink);
-				
+
 				/* Story Domain and its link */
 				var hnListItemContentStoryLinkDomain = hnBrowser.createElement('a');
 				hnListItemContentStoryLinkDomain.className = 'hnreader-story-link-domain';
@@ -545,13 +541,13 @@ var hnreader = {
 				hnListItemContentStoryLinkDomain.href = 'http://' + hnListItemContentStoryLink.hostname + '/';
 				hnListItemContentStoryLinkDomain.text = hnListItemContentStoryLink.hostname;
 				hnListItemContent.appendChild(hnListItemContentStoryLinkDomain);
-				
+
 				/* Story Points */
 				var hnListItemContentStoryPoints = hnBrowser.createElement('span');
 				hnListItemContentStoryPoints.className = 'hnreader-story-points';
 				hnListItemContentStoryPoints.textContent = jsObject.hits[key].points;
 				hnListItemContent.appendChild(hnListItemContentStoryPoints);
-										
+
 				/* Story Comments and its link */
 				var hnListItemContentCommentLink = hnBrowser.createElement('a');
 				hnListItemContentCommentLink.className = 'hnreader-story-comments';
@@ -563,13 +559,13 @@ var hnreader = {
 					 + ' comment' + (jsObject.hits[key].num_comments > 1 ? 's' : '');
 				hnListItemContentCommentLink.addEventListener('click', hnreader_comments.onCommentsViewClick, false);
 				hnListItemContent.appendChild(hnListItemContentCommentLink);
-				
+
 				/*Story Timestamp */
 				var hnListItemContentStoryTime = hnBrowser.createElement('span');
 				hnListItemContentStoryTime.className = 'hnreader-story-time';
 				hnListItemContentStoryTime.textContent = hnreader.readableTime(jsObject.hits[key].created_at);
 				hnListItemContent.appendChild(hnListItemContentStoryTime);
-				
+
 				/* Story Submitter and its profile link */
 				var hnListItemContentStorySubmitter = hnBrowser.createElement('a');
 				hnListItemContentStorySubmitter.className = 'hnreader-story-submitter';
@@ -578,14 +574,14 @@ var hnreader = {
 				hnListItemContentStorySubmitter.text = jsObject.hits[key].author;
 				hnListItemContentStorySubmitter.addEventListener('click', hnreader_submitter.onSubmitterViewClick, false);
 				hnListItemContent.appendChild(hnListItemContentStorySubmitter);
-				
+
 				/* Special handling for text-only submissions*/
 				var ycUrl = 'news.ycombinator.com';
 				if (jsObject.hits[key].url == "" || jsObject.hits[key].url == null) {
 					hnListItemContentStoryLink.href = 'https://' + ycUrl + '/item?id=' + jsObject.hits[key].objectID;
 					hnListItemContentStoryLinkDomain.href = 'http://' + ycUrl + '/';
 					hnListItemContentStoryLinkDomain.text = ycUrl;
-					
+
 					/* Attach the text of the submission right here but keep it hidden for the meanwhile */
 					if(jsObject.hits[key].story_text != "") {
 						var submissionText = hnBrowser.createElement('p');
@@ -594,19 +590,19 @@ var hnreader = {
 						submissionText.style.display = 'none';
 						hnListItemContent.appendChild(submissionText);
 					}
-					
+
 					/* check if it is a poll */
 					if (jsObject.hits[key]._tags[0] == "poll") {
 						hnListItemContentStoryLink.dataset.tag = "poll";
 					}
 				}
-				
+
 				hnListItem.appendChild(hnListItemContent);
 				parentElement.appendChild(hnListItem);
 			}
 		}
-	},		
-	
+	},
+
 	/**
 	 * Handle the event triggered when a story link is clicked
 	 *
@@ -615,7 +611,7 @@ var hnreader = {
 	onStoryViewClick : function (e) {
 		e.preventDefault();
 		var hnBrowser = e.target.ownerDocument;
-		
+
 		/* hide the pane on the right, if any*/
 		var viewpaneDiv = hnBrowser.getElementById("hnreader-viewpane");
 		if (viewpaneDiv)
@@ -623,7 +619,7 @@ var hnreader = {
 		else {
 			viewpaneDiv = hnBrowser.createElement('div');
 			viewpaneDiv.id = 'hnreader-viewpane';
-			
+
 			var t = hnBrowser.getElementById('hnreader-content-topStories');
 			t.style.width = "49.5%";
 			t.style.cssFloat = "left";
@@ -650,28 +646,28 @@ var hnreader = {
 			linkNode.style.display = 'none';
 		}
 		viewpaneDiv.appendChild(headingNode);
-	
+
 		/* add waiting animation in hnpage */
 		var hnContentWaitingDiv = hnBrowser.getElementById('hnreader-content-loading');
-		
+
 		if (!hnContentWaitingDiv) {
 			hnContentWaitingDiv = hnBrowser.createElement('div');
 			hnContentWaitingDiv.id = 'hnreader-content-loading';
 		}
 		viewpaneDiv.appendChild(hnContentWaitingDiv);
-		
+
 		/* notify when the page has finished loading */
-		
+
 		/* Check to see if it is a ycUrl */
 		var ycUrl = 'news.ycombinator.com';
 		if (e.target.href.indexOf(ycUrl) == -1) {
 			/* not a ycUrl */
 			this.request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
 				.createInstance(Components.interfaces.nsIXMLHttpRequest);
-			
+
 			var responseContentType;
 
-			this.request.onreadystatechange = function () { 
+			this.request.onreadystatechange = function () {
 				if (this.readyState == 2) {
 					if (this.getResponseHeader('Content-Type').indexOf('pdf') != -1) {
 						//response Content-Type is pdf
@@ -687,16 +683,16 @@ var hnreader = {
 			};
 
 			this.request.onload = function (aEvent) {
-				
+
 				let text = aEvent.target.responseText;
-				
+
 				var frameHtml = document.implementation.createDocument("http://www.w3.org/1999/xhtml", "html", null),
 				frameBody = document.createElementNS("http://www.w3.org/1999/xhtml", "body");
 				frameHtml.documentElement.appendChild(frameBody);
-				
+
 				//Handle a PDF document by displaying it in an iframe
 				if (responseContentType == 'pdf') {
-					var pdfContentDiv = hnBrowser.createElement('iframe');	
+					var pdfContentDiv = hnBrowser.createElement('iframe');
 					pdfContentDiv.src = e.target.href;
 					pdfContentDiv.style.width = '100%';
 					pdfContentDiv.style.height = (e.target.ownerDocument.documentElement.clientHeight - 50) + 'px';
@@ -704,29 +700,26 @@ var hnreader = {
 				}
 				//Handle a plain text file by displaying it in <pre></pre> tags
 				else if (responseContentType == 'text') {
-					var textContentDiv = hnBrowser.createElement('pre');	
-					textContentDiv.innerHTML = aEvent.target.responseText; 
+					var textContentDiv = hnBrowser.createElement('pre');
+					textContentDiv.innerHTML = aEvent.target.responseText;
 					frameBody.appendChild(textContentDiv);
 				}
 				//Handle an HTML file by stripping it off all Javascript and displaying it in <body></body> tags
-				else { // if(responseContentType == 'html') 
-					frameBody.appendChild(Components.classes["@mozilla.org/feed-unescapehtml;1"]
-						.getService(Components.interfaces.nsIScriptableUnescapeHTML)
-						.parseFragment(text, false, null, frameBody));
-				
-				
+				else { // if(responseContentType == 'html')
+					var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+					frameBody.appendChild(parser.parseFragment(text, parser.SanitizerDropForms, false, null, frameBody));
+
 					//Get the favicon of the website
 					var faviconDiv = hnreader_easytoread.getSiteFavicon(hnBrowser, text, e.target);
-					//viewpaneDiv.appendChild(faviconDiv);
 
 					//Create an easy-to-read version of the URL that has been passed in
 					frameBody = hnreader_easytoread.easyToRead(frameBody, e.target.href);
 					frameBody.insertBefore(faviconDiv, frameBody.firstChild);
-				} 
-				
+				}
+
 				/* remove waiting animation in hnpage */
 				var hnContentWaitingDiv = hnBrowser.getElementById('hnreader-content-loading');
-				
+
 				if (hnContentWaitingDiv) {
 					hnContentWaitingDiv.parentNode.removeChild(hnContentWaitingDiv);
 				}
@@ -747,17 +740,18 @@ var hnreader = {
 				}
 				viewpaneDiv.appendChild(headingNode);
 			};
-			
+
 			this.request.onerror = hnreader.requestErrorHandler;
-			
+
 			this.request.open("GET", e.target.href, true);
 			this.request.setRequestHeader("Referer", e.target.protocol + '//' + e.target.hostname + '/');
 			this.request.send(null);
-			
+
 		} else { /* it's a ycUrl */
+
 			/* remove waiting animation in hnpage */
 			var hnContentWaitingDiv = hnBrowser.getElementById('hnreader-content-loading');
-			
+
 			if (hnContentWaitingDiv) {
 				hnContentWaitingDiv.parentNode.removeChild(hnContentWaitingDiv);
 			}
@@ -769,11 +763,11 @@ var hnreader = {
 			}
 			//display the comments
 			e.target.parentElement.getElementsByClassName('hnreader-story-comments')[0].click();
-			
+
 		}
 		hnBrowser.documentElement.scrollTop = 0;
 	},
-	
+
 	/**
 	 * Open a new tab when needed, and re-use existing when already opened
 	 * Courtesy Mozilla Developer Network and individual contributors
@@ -786,32 +780,32 @@ var hnreader = {
 			.getService(Components.interfaces.nsIWindowMediator);
 		var browserEnumerator = wm.getEnumerator("navigator:browser");
 		var hnBrowser;
-		
+
 		// Check each browser instance for our URL
 		var found = false;
 		while (!found && browserEnumerator.hasMoreElements()) {
 			var browserWin = browserEnumerator.getNext();
 			var tabbrowser = browserWin.gBrowser;
-			
+
 			// Check each tab of this browser instance
 			var numTabs = tabbrowser.browsers.length;
 			for (var index = 0; index < numTabs; index++) {
 				var currentBrowser = tabbrowser.getBrowserAtIndex(index);
 				if (url == currentBrowser.currentURI.spec) {
-					
+
 					// The URL is already opened. Select this tab.
 					tabbrowser.selectedTab = tabbrowser.tabContainer.childNodes[index];
-					
+
 					// Focus *this* browser-window
 					browserWin.focus();
-					
+
 					found = true;
 					hnBrowser = currentBrowser;
 					break;
 				}
 			}
 		}
-		
+
 		// Our URL isn't open. Open it now.
 		if (!found) {
 			hnBrowser = gBrowser.getBrowserForTab(gBrowser.addTab(url));
@@ -819,7 +813,7 @@ var hnreader = {
 		gBrowser.selectedTab = hnBrowser;
 		return { hnBrowser: hnBrowser, found: found };
 	},
-	
+
 	/**
 	 * Handle the response when an API call returns an error
 	 *
@@ -856,14 +850,13 @@ var hnreader = {
      str = str.replace(/(\\?\\n)/g, function($1) { return ($1 == "\\n" ?  "<br>" : $1) });
      //search and replace all escaped newlines with newlines
      str = str.replace(/(\\\\n)/g, "\\n");
-     //text = str;
 		 text = str;
    }
 	 return text;
 	},
 
 	/**
-	 * Display time elapsed in a human readable format 
+	 * Display time elapsed in a human readable format
 	 *
 	 * @return Number of minutes or hours or days or months or years elapsed
 	 **/
@@ -876,9 +869,9 @@ var hnreader = {
 			' month' : 30,
 			' year' : 12
 		};
-		
+
 		var timeElapsed = Math.floor(Math.abs(new Date() - new Date(timestamp)) / (1000)); //in seconds
-		
+
 		for (var t in timePeriods) {
 			timeElapsed = Math.floor(timeElapsed / timePeriods[t]);
 			if (timeElapsed >= 1) {
@@ -887,7 +880,7 @@ var hnreader = {
 		}
 		return displayString;
 	},
-	
+
 	/**
 	 * Show debug statements in the browser console log
 	 *
@@ -902,35 +895,35 @@ var hnreader = {
 };
 window.addEventListener("load", window.hnreader.onLoad, false);
 
-window.document.addEventListener("onTopStoriesClick", function(e) { 
-	hnreader.topStories(e); 
+window.document.addEventListener("onTopStoriesClick", function(e) {
+	hnreader.topStories(e);
 }, false, true);
 
-window.document.addEventListener("onNewestStoriesClick", function(e) { 
-	hnreader.newestStories(e); 
+window.document.addEventListener("onNewestStoriesClick", function(e) {
+	hnreader.newestStories(e);
 }, false, true);
 
-window.document.addEventListener("onLast7DaysClick", function(e) { 
-	hnreader.last7Days(e); 
+window.document.addEventListener("onLast7DaysClick", function(e) {
+	hnreader.last7Days(e);
 }, false, true);
 
-window.document.addEventListener("onLast30DaysClick", function(e) { 
-	hnreader.last30Days(e); 
+window.document.addEventListener("onLast30DaysClick", function(e) {
+	hnreader.last30Days(e);
 }, false, true);
 
-window.document.addEventListener("onPollsClick", function(e) { 
+window.document.addEventListener("onPollsClick", function(e) {
 	hnreader_poll.last30Polls(e);
 }, false, true);
 
-window.document.addEventListener("onWhoIsHiringClick", function(e) { 
-	hnreader.whoIsHiring(e); 
+window.document.addEventListener("onWhoIsHiringClick", function(e) {
+	hnreader.whoIsHiring(e);
 }, false, true);
 
-window.document.addEventListener("onShowHnClick", function(e) { 
-	hnreader.showHnStories(e); 
+window.document.addEventListener("onShowHnClick", function(e) {
+	hnreader.showHnStories(e);
 }, false, true);
 
-window.document.addEventListener("onAskHnClick", function(e) { 
-	hnreader.askHnStories(e); 
+window.document.addEventListener("onAskHnClick", function(e) {
+	hnreader.askHnStories(e);
 }, false, true);
 

@@ -4,7 +4,7 @@
     <em:id>hnreader@pragmatictester.com</em:id>
     <em:type>2</em:type>
     <em:name>Hacker News Reader</em:name>
-    <em:version>1.0</em:version>
+    <em:version>1.1</em:version>
     <em:creator>pragmatic</em:creator>
 		<em:homepageURL>https://github.com/pragmatictester/hnreader</em:homepageURL>
 		<em:iconURL>chrome://hnreader/skin/hnreader.png</em:iconURL>
