@@ -586,7 +586,12 @@ var hnreader = {
 					if(jsObject.hits[key].story_text != "") {
 						var submissionText = hnBrowser.createElement('p');
 						submissionText.className = 'yc-submission-text';
-						submissionText.innerHTML = jsObject.hits[key].story_text;
+            try {
+              submissionText.innerHTML = hnreader.readableText(jsObject.hits[key].story_text);
+            } catch(e) {
+		          hnreader.jsdump("Exception caught: " + e.message);
+		          submissionText.innerHTML = jsObject.hits[key].story_text;
+		        }
 						submissionText.style.display = 'none';
 						hnListItemContent.appendChild(submissionText);
 					}
