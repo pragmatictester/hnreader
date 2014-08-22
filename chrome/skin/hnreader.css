@@ -57,7 +57,7 @@ hr {
 	clear: both;
 	border-top: 1px dotted #F9F9F9;
 }
-#hnreader-content { 
+#hnreader-content {
 	border-top: 1px dotted #F9F9F9;
 	color: black;
 	font-family: Georgia, serif;
@@ -75,7 +75,7 @@ hr {
 }
 #hnreader-content .separator ,
 .hnreader-story-link-domain,
-.hnreader-story-points, 
+.hnreader-story-points,
 .hnreader-story-comments,
 .hnreader-story-time,
 .hnreader-story-submitter {
@@ -83,7 +83,7 @@ hr {
 	color: #727272;
 }
 
-.hnreader-story-item 
+.hnreader-story-item
 {
 	margin: 7px 0;
 }
@@ -146,7 +146,7 @@ hr {
 	background: url('resource://hnreader/loading.gif') no-repeat center transparent;
 }
 #hnreader-viewpane {
-	width: 49.5%;	
+	width: 49.5%;
   float: left;
   padding: 0;
 	margin: 0;
@@ -231,12 +231,15 @@ hr {
 #hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li p.hnreader-poll-candidate {
 	margin: 0.5em 0 0;
 }
+#hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li p.hnreader-poll-candidate > p {
+	margin: 0;
+}
 #hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-vote-count {
 	display: inline;
 	position: absolute;
 	margin: 0 0 0 0.25em;
 	font-family: 'Inconsolata', monospace;
-	font-size: 0.9em;	
+	font-size: 0.9em;
 }
 #hnreader-viewpane .hnreader-poll ul.hnreader-poll-list li span.hnreader-poll-candidate-votes-horizbar {
 	display: inline-block;
@@ -386,7 +389,7 @@ ul.hnreader-comment-items li p.hnreader-comment-item {
 	text-align: left;
 }
 #hnreader-tooltip .popup-close {
-	text-align:right; 
+	text-align:right;
 	cursor: pointer;
 	display: block;
 	width: 100%;
@@ -423,13 +426,24 @@ ul.hnreader-comment-items li p.hnreader-comment-item {
 	font-size: 1.2em;
 }
 
+/* content layout */
+#hnreader-viewpane .article-chiclet {
+	display: none;
+}
+#hnreader-viewpane .trendingNow {
+	display: none;
+}
+#hnreader-viewpane .hidden {
+	display: none;
+}
+
 /* code syntax highlight */
 #hnreader-viewpane pre code[class]:after {
   content: 'highlight: ' attr(class);
-  display: block; 
+  display: block;
 	text-align: right;
   font-size: smaller;
-  color: black; 
+  color: black;
 	background: white;
   border-top: solid 1px;
   padding-top: 0.5em;
@@ -440,7 +454,7 @@ ul.hnreader-comment-items li p.hnreader-comment-item {
   padding: 0.25em;
 }
 #hnreader-viewpane pre code .string,
-#hnreader-viewpane pre code .title, 
+#hnreader-viewpane pre code .title,
 #hnreader-viewpane pre code .parent,
 #hnreader-viewpane pre code .tag .attribute .value,
 #hnreader-viewpane pre code .rules .value,
