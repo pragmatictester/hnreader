@@ -4,7 +4,7 @@
     <em:id>hnreader@pragmatictester.com</em:id>
     <em:type>2</em:type>
     <em:name>Hacker News Reader</em:name>
-    <em:version>1.2</em:version>
+    <em:version>1.3</em:version>
     <em:creator>pragmatic</em:creator>
 		<em:homepageURL>https://github.com/pragmatictester/hnreader</em:homepageURL>
 		<em:iconURL>chrome://hnreader/skin/hnreader.png</em:iconURL>
@@ -14,7 +14,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id> <!-- Firefox -->
         <em:minVersion>3.6</em:minVersion>
-        <em:maxVersion>29.*</em:maxVersion>
+        <em:maxVersion>35.0</em:maxVersion>
       </Description>
     </em:targetApplication>
 		<em:description>Read Hacker News via an interface powered by the HN Search API.</em:description>
