@@ -44,13 +44,13 @@ var hnreader_submitter = {
 
 			var tipClose = e.target.ownerDocument.createElement("span");
 			tipClose.className = "popup-close";
-			tipClose.innerHTML = "[x]";
+			tipClose.textContent = "[x]";
 			tipClose.addEventListener('click', hnreader_submitter.onSubmitterViewClose, false);
 			tip.appendChild(tipClose);
 
 			var tipHeader = e.target.ownerDocument.createElement("h4");
 			tipHeader.className = "profile-header";
-			tipHeader.innerHTML = jsObject.username;
+			tipHeader.textContent = jsObject.username;
 			tip.appendChild(tipHeader);
 
 			var tipSummary = e.target.ownerDocument.createElement("p");
@@ -59,12 +59,12 @@ var hnreader_submitter = {
 
 			var tipSummaryKarma = e.target.ownerDocument.createElement("span");
 			tipSummaryKarma.className = "profile-summary-karma";
-			tipSummaryKarma.innerHTML = jsObject.karma;
+			tipSummaryKarma.textContent = jsObject.karma;
 			tipSummary.appendChild(tipSummaryKarma);
 
 			var tipSummaryMembership = e.target.ownerDocument.createElement("span");
 			tipSummaryMembership.className = "profile-summary-membership";
-			tipSummaryMembership.innerHTML = hnreader.readableTime(jsObject.created_at);
+			tipSummaryMembership.textContent = hnreader.readableTime(jsObject.created_at);
 			tipSummary.appendChild(tipSummaryMembership);
 
 			var tipSummarySubmissions = e.target.ownerDocument.createElement("a");
@@ -73,7 +73,7 @@ var hnreader_submitter = {
 			tipSummarySubmissions.addEventListener('click', hnreader_submitter.onSubmitterStoriesClick, false);
 			tipSummarySubmissions.removeEventListener('click', hnreader_submitter.onSubmitterViewClick, false);
 			tipSummarySubmissions.title= jsObject.submission_count + ' submission' + (jsObject.submission_count > 1 ? 's' : '');
-			tipSummarySubmissions.innerHTML = jsObject.submission_count;
+			tipSummarySubmissions.textContent = jsObject.submission_count;
 			tipSummary.appendChild(tipSummarySubmissions);
 
 			var tipSummaryComments = e.target.ownerDocument.createElement("a");
@@ -82,7 +82,7 @@ var hnreader_submitter = {
 			tipSummaryComments.addEventListener('click', hnreader_submitter.onSubmitterCommentsClick, false);
 			tipSummarySubmissions.removeEventListener('click', hnreader_submitter.onSubmitterViewClick, false);
 			tipSummaryComments.title = jsObject.comment_count + ' comment' + (jsObject.comment_count > 1 ? 's' : '');
-			tipSummaryComments.innerHTML = jsObject.comment_count;
+			tipSummaryComments.textContent = jsObject.comment_count;
 			tipSummary.appendChild(tipSummaryComments);
 
 			var tipDetails = e.target.ownerDocument.createElement("p");
@@ -99,7 +99,7 @@ var hnreader_submitter = {
 		};
 
 		this.request.onerror = function (aEvent) {
-			e.target.ownerDocument.getElementById("profile-details").innerHTML =
+			e.target.ownerDocument.getElementById("profile-details").textContent =
 				'Error requesting ' + username + '\'s profile.' + aEvent.target.status;
 			hnreader_submitter.setTooltipDisplay(e.target.ownerDocument.getElementById("hnreader-tooltip"),
 							                             e.target.ownerDocument.documentElement.clientHeight, e.clientY, e.pageY, e.pageX);
