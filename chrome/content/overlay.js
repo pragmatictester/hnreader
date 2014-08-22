@@ -181,6 +181,15 @@ var hnreader = {
 
 			let jsObject = JSON.parse(aEvent.target.responseText);
 
+			/* Remove all Stories that are more than 1 hour old and have no comments */
+			var timestamp1hr = ( Math.round((new Date()).getTime() / 1000) - (1*60*60) );
+			for(i = 0; i < jsObject.hits.length; i++) {
+				if( (jsObject.hits[i].num_comments == 0) && (jsObject.hits[i].created_at_i < timestamp1hr) ) {
+					jsObject.hits.splice(i, 1);
+					i--;
+				}
+			}
+
 			/* Story Hotness Rank */
 			for(i = 0; i < jsObject.hits.length; i++) {
 				var num_points = jsObject.hits[i].points;
@@ -520,13 +529,13 @@ var hnreader = {
 
 		for (var key in jsObject.hits) {
 			if (jsObject.hits.hasOwnProperty(key)) {
-				var hnListItem = hnBrowser.createElement('li');
-				var hnListItemContent = hnBrowser.createElement('p');
+				var hnListItem = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'li');
+				var hnListItemContent = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'p');
 				hnListItemContent.className = 'hnreader-story-item';
 				var separator = hnBrowser.createTextNode(" ");
 
 				/* Story Title and its link */
-				var hnListItemContentStoryLink = hnBrowser.createElement('a');
+				var hnListItemContentStoryLink = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'a');
 				hnListItemContentStoryLink.className = 'hnreader-story-link';
 				hnListItemContentStoryLink.target = '_blank';
 				hnListItemContentStoryLink.href = jsObject.hits[key].url;
@@ -535,7 +544,7 @@ var hnreader = {
 				hnListItemContent.appendChild(hnListItemContentStoryLink);
 
 				/* Story Domain and its link */
-				var hnListItemContentStoryLinkDomain = hnBrowser.createElement('a');
+				var hnListItemContentStoryLinkDomain = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'a');
 				hnListItemContentStoryLinkDomain.className = 'hnreader-story-link-domain';
 				hnListItemContentStoryLinkDomain.target = '_blank';
 				hnListItemContentStoryLinkDomain.href = 'http://' + hnListItemContentStoryLink.hostname + '/';
@@ -543,13 +552,13 @@ var hnreader = {
 				hnListItemContent.appendChild(hnListItemContentStoryLinkDomain);
 
 				/* Story Points */
-				var hnListItemContentStoryPoints = hnBrowser.createElement('span');
+				var hnListItemContentStoryPoints = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'span');
 				hnListItemContentStoryPoints.className = 'hnreader-story-points';
 				hnListItemContentStoryPoints.textContent = jsObject.hits[key].points;
 				hnListItemContent.appendChild(hnListItemContentStoryPoints);
 
 				/* Story Comments and its link */
-				var hnListItemContentCommentLink = hnBrowser.createElement('a');
+				var hnListItemContentCommentLink = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'a');
 				hnListItemContentCommentLink.className = 'hnreader-story-comments';
 				hnListItemContentCommentLink.id = jsObject.hits[key].objectID;
 				hnListItemContentCommentLink.target = '_blank';
@@ -561,13 +570,13 @@ var hnreader = {
 				hnListItemContent.appendChild(hnListItemContentCommentLink);
 
 				/*Story Timestamp */
-				var hnListItemContentStoryTime = hnBrowser.createElement('span');
+				var hnListItemContentStoryTime = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'span');
 				hnListItemContentStoryTime.className = 'hnreader-story-time';
 				hnListItemContentStoryTime.textContent = hnreader.readableTime(jsObject.hits[key].created_at);
 				hnListItemContent.appendChild(hnListItemContentStoryTime);
 
 				/* Story Submitter and its profile link */
-				var hnListItemContentStorySubmitter = hnBrowser.createElement('a');
+				var hnListItemContentStorySubmitter = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'a');
 				hnListItemContentStorySubmitter.className = 'hnreader-story-submitter';
 				hnListItemContentStorySubmitter.target = '_blank';
 				hnListItemContentStorySubmitter.href = 'https://news.ycombinator.com/user?id=' + jsObject.hits[key].author;
@@ -584,7 +593,7 @@ var hnreader = {
 
 					/* Attach the text of the submission right here but keep it hidden for the meanwhile */
 					if(jsObject.hits[key].story_text != "") {
-						var submissionText = hnBrowser.createElement('p');
+						var submissionText = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'p');
 						submissionText.className = 'yc-submission-text';
             try {
               submissionText.innerHTML = hnreader.readableText(jsObject.hits[key].story_text);
@@ -706,7 +715,7 @@ var hnreader = {
 				//Handle a plain text file by displaying it in <pre></pre> tags
 				else if (responseContentType == 'text') {
 					var textContentDiv = hnBrowser.createElement('pre');
-					textContentDiv.innerHTML = aEvent.target.responseText;
+					textContentDiv.textContent = aEvent.target.responseText;
 					frameBody.appendChild(textContentDiv);
 				}
 				//Handle an HTML file by stripping it off all Javascript and displaying it in <body></body> tags
@@ -830,7 +839,7 @@ var hnreader = {
 		var hnBrowser = tabForUrl.hnBrowser;
 		var errorDiv = hnBrowser.contentDocument.createElement("p");
 		errorDiv.id = "hnreader-error";
-		errorDiv.innerHTML = 'Connection timed out or network error. Request status: ' + aEvent.target.status + ' ' +  aEvent.target.statusText;
+		errorDiv.textContent = 'Connection timed out or network error. Request status: ' + aEvent.target.status + ' ' +  aEvent.target.statusText;
 		var hnContentWaitingDiv = hnBrowser.contentDocument.getElementById('hnreader-content-loading');
 		if (hnContentWaitingDiv) {
 			hnContentWaitingDiv.parentNode.appendChild(errorDiv);
@@ -851,8 +860,8 @@ var hnreader = {
 	readableText : function(text) {
 	 if(text.indexOf("\\n") != -1) {
      var str = text.toString();
-     //search and replace all newlines with <br> tag
-     str = str.replace(/(\\?\\n)/g, function($1) { return ($1 == "\\n" ?  "<br>" : $1) });
+     //search and replace all newlines with <br/> tag
+     str = str.replace(/(\\?\\n)/g, function($1) { return ($1 == "\\n" ?  "<br/>" : $1) });
      //search and replace all escaped newlines with newlines
      str = str.replace(/(\\\\n)/g, "\\n");
 		 text = str;
@@ -902,33 +911,33 @@ window.addEventListener("load", window.hnreader.onLoad, false);
 
 window.document.addEventListener("onTopStoriesClick", function(e) {
 	hnreader.topStories(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onNewestStoriesClick", function(e) {
 	hnreader.newestStories(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onLast7DaysClick", function(e) {
 	hnreader.last7Days(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onLast30DaysClick", function(e) {
 	hnreader.last30Days(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onPollsClick", function(e) {
 	hnreader_poll.last30Polls(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onWhoIsHiringClick", function(e) {
 	hnreader.whoIsHiring(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onShowHnClick", function(e) {
 	hnreader.showHnStories(e);
-}, false, true);
+}, false, false);
 
 window.document.addEventListener("onAskHnClick", function(e) {
 	hnreader.askHnStories(e);
-}, false, true);
+}, false, false);
 
