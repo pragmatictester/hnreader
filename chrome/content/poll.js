@@ -48,7 +48,7 @@ var hnreader_poll = {
 		var pollCandidates = new Array();
 		for (i = 0; i < jsObject.options.length; i++) {
 			pollCandidates[i] = {};
-			pollCandidates[i]["innerHTML"] = jsObject.options[i].text; //this is an option
+			pollCandidates[i]["option"] = jsObject.options[i].text; //this is an option
 			pollCandidates[i]["votes"] = jsObject.options[i].points; //these are the points of the option
 			totalVotes += pollCandidates[i].votes; 
 		}
@@ -69,6 +69,8 @@ var hnreader_poll = {
 		var pollCandidatesList = hnBrowser.createElement("ul");
 		pollCandidatesList.className = 'hnreader-poll-list';
 		pollDiv.appendChild(pollCandidatesList);
+
+		var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
 			
 		for (i = 0; i < pollCandidates.length; i++) {
 			var pollCandidatesListItem = hnBrowser.createElement("li");
@@ -76,7 +78,8 @@ var hnreader_poll = {
 			
 			var pollCandidatesListItemName = hnBrowser.createElement("p");
 			pollCandidatesListItemName.className = 'hnreader-poll-candidate';
-			pollCandidatesListItemName.innerHTML = pollCandidates[i]["innerHTML"]; 
+			pollCandidatesListItemName.appendChild(parser.parseFragment(pollCandidates[i]["option"], 
+						parser.SanitizerDropForms, false, null, pollCandidatesListItemName));
 			pollCandidatesListItem.appendChild(pollCandidatesListItemName);
 			
 			var pollCandidatesListItemHorizBar = hnBrowser.createElement("span");

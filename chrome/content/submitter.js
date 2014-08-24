@@ -88,7 +88,9 @@ var hnreader_submitter = {
 			var tipDetails = e.target.ownerDocument.createElement("p");
 			tipDetails.className = "profile-details";
 			var profileDetails = jsObject.about != null ? jsObject.about : '';
-			tipDetails.innerHTML = hnreader.readableText(profileDetails);
+			var profile_text = hnreader.readableText(profileDetails);
+			var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+			tipDetails.appendChild(parser.parseFragment(profile_text, parser.SanitizerDropForms, false, null, tipDetails));
 			tip.appendChild(tipDetails);
 
 			tip.style.left = e.pageX + 'px';
@@ -304,6 +306,8 @@ var hnreader_submitter = {
 				hnListItemContentCommentLink.addEventListener('click', hnreader_comments.onCommentsViewClick, false);
 				hnListItemContent.appendChild(hnListItemContentCommentLink);
 
+				var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+
 				/* Special handling for text-only submissions*/
 				var ycUrl = 'news.ycombinator.com';
 				if (jsObject.hits[key].story_url == "" || jsObject.hits[key].story_url == null) {
@@ -315,7 +319,8 @@ var hnreader_submitter = {
 					if(jsObject.hits[key].story_text && jsObject.hits[key].story_text != "") {
 						var submissionText = hnBrowser.createElement('p');
 						submissionText.className = 'yc-submission-text';
-						submissionText.innerHTML = jsObject.hits[key].story_text;
+						var story_text = hnreader.readableText(jsObject.hits[key].story_text);
+						submissionText.appendChild(parser.parseFragment(story_text, parser.SanitizerDropForms, false, null, submissionText));
 						submissionText.style.display = 'none';
 						hnListItemContent.appendChild(submissionText);
 					}
@@ -328,8 +333,9 @@ var hnreader_submitter = {
 
 				/* Comment text */
 				var hnCommentText = hnBrowser.createElement('p');
-				hnCommentText.innerHTML = hnreader.readableText(jsObject.hits[key].comment_text);
 				hnCommentText.className = 'hnreader-comment-text';
+				var comment_text = hnreader.readableText(jsObject.hits[key].comment_text);
+				hnCommentText.appendChild(parser.parseFragment(comment_text, parser.SanitizerDropForms, false, null, hnCommentText));
 				hnListItemContent.appendChild(hnCommentText);
 
 				hnListItem.appendChild(hnListItemContent);

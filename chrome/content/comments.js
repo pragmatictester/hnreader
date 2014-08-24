@@ -81,14 +81,12 @@ var hnreader_comments = {
 			
 			var hnStoryTitle = hnBrowser.createElement('h1');
 			hnStoryTitle.id = 'hnreader-comments-storytitle';
-			//hnStoryTitle.innerHTML = jsObject.children[0].item.discussion.title;
 			hnCommentsDiv.appendChild(hnStoryTitle);
 			
 			var hnCommentsListDiv = hnBrowser.createElement('div');
 			hnCommentsListDiv.id = 'hnreader-comments-list';
 			hnCommentsDiv.appendChild(hnCommentsListDiv);
-			//var hnTopStoriesList = hnBrowser.contentDocument.createTextNode(JSON.stringify(jsObject));
-			//
+			
 			var hnCommentsList = hnBrowser.createElement('ul');
 			hnCommentsList.className = 'hnreader-comment-items';
 			hnCommentsListDiv.appendChild(hnCommentsList);
@@ -240,7 +238,7 @@ var hnreader_comments = {
 		hnCommentThread.className = 'hnreader-comment-expand';
 		hnCommentThread.href = '#';
 		hnCommentThread.style.display = 'none';
-		hnCommentThread.innerHTML = '[+]';
+		hnCommentThread.textContent = '[+]';
 		hnCommentThread.addEventListener('click', hnreader_comments.onCommentThreadClick, false);
 		hnCommentsListItemContent.appendChild(hnCommentThread);
 					
@@ -287,8 +285,10 @@ var hnreader_comments = {
 					
 		/* Comment text */
 		var hnCommentText = hnBrowser.createElement('p');
-		hnCommentText.innerHTML = hnreader.readableText(commentText);
 		hnCommentText.className = 'hnreader-comment-text';
+		var comment_text = hnreader.readableText(commentText);
+		var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+		hnCommentText.appendChild(parser.parseFragment(comment_text, parser.SanitizerDropForms, false, null, hnCommentText));
 		hnCommentsListItem.appendChild(hnCommentText);
 				
 
@@ -306,8 +306,8 @@ var hnreader_comments = {
 		var thread = e.target.ownerDocument.getElementById(e.target.id.substring(7)); //thread-id
 		var childThreads = thread.getElementsByClassName('hnreader-comment-items')[0].childNodes;
 
-		if (expandSymbol.innerHTML == '[+]') {
-			expandSymbol.innerHTML = '[-]';
+		if (expandSymbol.textContent == '[+]') {
+			expandSymbol.textContent = '[-]';
 			for (var index = 0; index < childThreads.length; index++) {
 				childThreads[index].style.display = "list-item";
 				if (childThreads[index].getElementsByClassName('hnreader-comment-items').childElementCount == 0)
@@ -315,7 +315,7 @@ var hnreader_comments = {
 			}
 		} 
 		else {
-			expandSymbol.innerHTML = '[+]';
+			expandSymbol.textContent = '[+]';
 			for (var index = 0; index < childThreads.length; index++) {
 				childThreads[index].style.display = "none";
 			}

@@ -595,12 +595,10 @@ var hnreader = {
 					if(jsObject.hits[key].story_text != "") {
 						var submissionText = hnBrowser.createElementNS("http://www.w3.org/1999/xhtml",'p');
 						submissionText.className = 'yc-submission-text';
-            try {
-              submissionText.innerHTML = hnreader.readableText(jsObject.hits[key].story_text);
-            } catch(e) {
-		          hnreader.jsdump("Exception caught: " + e.message);
-		          submissionText.innerHTML = jsObject.hits[key].story_text;
-		        }
+            var story_text = hnreader.readableText(jsObject.hits[key].story_text);
+            var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+            submissionText.appendChild(parser.parseFragment(story_text, parser.SanitizerDropForms, false, null, submissionText));
+
 						submissionText.style.display = 'none';
 						hnListItemContent.appendChild(submissionText);
 					}
@@ -617,6 +615,33 @@ var hnreader = {
 		}
 	},
 
+	/**
+	 * Add the story item info like URL, timestamp and submitter
+	 *
+	 * @param: originalNode: story item info node to clone
+	 * @param: addStoryClickEventHandler: boolean value to add event handler to story link
+	 * @param: position: 'first' or 'last' based on where the node will be added
+	 * @return storyInfoNode: DOM node containing the story item info and event handlers
+	 **/
+	addStoryInfo : function (originalNode, addStoryClickEventHandler, position) {
+		var headingNode = originalNode.cloneNode(true);
+		headingNode.dataset.position = position;
+
+		var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
+		linkNode.addEventListener('click', hnreader_submitter.onSubmitterViewClick, false);
+		linkNode = headingNode.getElementsByClassName('hnreader-story-comments')[0];
+		linkNode.addEventListener('click', hnreader_comments.onCommentsViewClick, false);
+
+		if(addStoryClickEventHandler) {
+			linkNode = headingNode.getElementsByClassName('hnreader-story-link')[0];
+			linkNode.addEventListener('click', hnreader.onStoryViewClick, false);
+		}
+
+		linkNode = headingNode.getElementsByClassName('hnreader-comment-text')[0];
+		if(linkNode) {
+			linkNode.style.display = 'none';
+		}
+	},
 	/**
 	 * Handle the event triggered when a story link is clicked
 	 *
@@ -641,6 +666,8 @@ var hnreader = {
 		}
 
 		/* Add the story item info */
+		var headingNode = hnreader.addStoryInfo(e.target.parentNode, true, 'first'); 
+		/*
 		var headingNode = e.target.parentNode.cloneNode(true);
 		headingNode.dataset.position = 'first';
 		var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
@@ -659,6 +686,7 @@ var hnreader = {
 		if(linkNode) {
 			linkNode.style.display = 'none';
 		}
+		*/
 		viewpaneDiv.appendChild(headingNode);
 
 		/* add waiting animation in hnpage */
@@ -704,6 +732,8 @@ var hnreader = {
 				frameBody = document.createElementNS("http://www.w3.org/1999/xhtml", "body");
 				frameHtml.documentElement.appendChild(frameBody);
 
+				var parser = Components.classes["@mozilla.org/parserutils;1"].getService(Components.interfaces.nsIParserUtils);
+
 				//Handle a PDF document by displaying it in an iframe
 				if (responseContentType == 'pdf') {
 					var pdfContentDiv = hnBrowser.createElement('iframe');
@@ -715,7 +745,7 @@ var hnreader = {
 				//Handle a plain text file by displaying it in <pre></pre> tags
 				else if (responseContentType == 'text') {
 					var textContentDiv = hnBrowser.createElement('pre');
-					textContentDiv.textContent = aEvent.target.responseText;
+					textContentDiv.appendChild(parser.parseFragment(aEvent.target.responseText, parser.SanitizerDropForms, false, null, textContentDiv));
 					frameBody.appendChild(textContentDiv);
 				}
 				//Handle an HTML file by stripping it off all Javascript and displaying it in <body></body> tags
@@ -740,6 +770,8 @@ var hnreader = {
 				viewpaneDiv.appendChild(frameBody);
 
 				/* Add the story item info */
+				var headingNode = hnreader.addStoryInfo(e.target.parentNode, true, 'last'); 
+				/*
 				var headingNode = e.target.parentNode.cloneNode(true);
 				headingNode.dataset.position = 'last';
 				var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
@@ -752,6 +784,7 @@ var hnreader = {
 				if(linkNode) {
 					linkNode.style.display = 'none';
 				}
+				*/
 				viewpaneDiv.appendChild(headingNode);
 			};
 
