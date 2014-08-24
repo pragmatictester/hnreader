@@ -616,33 +616,6 @@ var hnreader = {
 	},
 
 	/**
-	 * Add the story item info like URL, timestamp and submitter
-	 *
-	 * @param: originalNode: story item info node to clone
-	 * @param: addStoryClickEventHandler: boolean value to add event handler to story link
-	 * @param: position: 'first' or 'last' based on where the node will be added
-	 * @return storyInfoNode: DOM node containing the story item info and event handlers
-	 **/
-	addStoryInfo : function (originalNode, addStoryClickEventHandler, position) {
-		var headingNode = originalNode.cloneNode(true);
-		headingNode.dataset.position = position;
-
-		var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
-		linkNode.addEventListener('click', hnreader_submitter.onSubmitterViewClick, false);
-		linkNode = headingNode.getElementsByClassName('hnreader-story-comments')[0];
-		linkNode.addEventListener('click', hnreader_comments.onCommentsViewClick, false);
-
-		if(addStoryClickEventHandler) {
-			linkNode = headingNode.getElementsByClassName('hnreader-story-link')[0];
-			linkNode.addEventListener('click', hnreader.onStoryViewClick, false);
-		}
-
-		linkNode = headingNode.getElementsByClassName('hnreader-comment-text')[0];
-		if(linkNode) {
-			linkNode.style.display = 'none';
-		}
-	},
-	/**
 	 * Handle the event triggered when a story link is clicked
 	 *
 	 * @return void
@@ -666,8 +639,6 @@ var hnreader = {
 		}
 
 		/* Add the story item info */
-		var headingNode = hnreader.addStoryInfo(e.target.parentNode, true, 'first'); 
-		/*
 		var headingNode = e.target.parentNode.cloneNode(true);
 		headingNode.dataset.position = 'first';
 		var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
@@ -686,7 +657,6 @@ var hnreader = {
 		if(linkNode) {
 			linkNode.style.display = 'none';
 		}
-		*/
 		viewpaneDiv.appendChild(headingNode);
 
 		/* add waiting animation in hnpage */
@@ -770,8 +740,6 @@ var hnreader = {
 				viewpaneDiv.appendChild(frameBody);
 
 				/* Add the story item info */
-				var headingNode = hnreader.addStoryInfo(e.target.parentNode, true, 'last'); 
-				/*
 				var headingNode = e.target.parentNode.cloneNode(true);
 				headingNode.dataset.position = 'last';
 				var linkNode = headingNode.getElementsByClassName('hnreader-story-submitter')[0];
@@ -784,7 +752,6 @@ var hnreader = {
 				if(linkNode) {
 					linkNode.style.display = 'none';
 				}
-				*/
 				viewpaneDiv.appendChild(headingNode);
 			};
 
